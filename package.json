@@ -1,0 +1,19 @@
+{
+  "name": "ipreporter",
+  "version": "1.0.0",
+  "description": "Stores incoming IP addresses for reporting purposes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javelinco/ipReporter.git"
+  },
+  "author": "Mark Munson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/javelinco/ipReporter/issues"
+  },
+  "homepage": "https://github.com/javelinco/ipReporter#readme"
+}
