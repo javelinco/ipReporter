@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/javelinco/ipReporter/issues"
   },
-  "homepage": "https://github.com/javelinco/ipReporter#readme"
+  "homepage": "https://github.com/javelinco/ipReporter#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
 }
