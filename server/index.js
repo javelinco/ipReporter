@@ -1,37 +1,37 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var fs = require("fs");
 
-var dataSource = __dirname + "/ipReports.json";
+var ipReports = [];
+
+// Allows retrieval of raw body from request
+app.use(bodyParser.json({verify:function(req,res,buf){req.rawBody=buf;}}));
 
 app.get('/api/ipReports', function (req, res) {
-  fs.readFile(datasource, 'utf8', function (err, data) {
-    res.end(data);
-  });
+  res.end(JSON.stringify(ipReports, null, 2));
 });
 
 app.post('/api/', function (req, res) {
-  var jsonData = [];
-  var content = fs.readFile(dataSource, 'utf8', function (err, data) {
-    jsonData = JSON.parse(data);
-  });
-  var newRecord = {
-    "mmunson": {
-      "ReportDate": "1/1/2016 09:00:00",
-      "InternalIps": [
-        "192.168.217.1",
-        "192.168.217.2"
-      ],
-      "ExternalIps": [
-        "10.1.1.1",
-        "10.1.1.2"
-      ]
-    }
-  };
-  jsonData.push(newRecord);
-  fs.writeFile(dataSource, JSON.stringify(jsonData, null, 2), function (err) {
-    if (err) return console.log(err);
-  });
+  var incoming = req.body;
+
+  var result = ipReports.filter(function (report) {
+    return report.host.HostName === incoming.host.HostName; 
+  })[0];
+
+  if (result) {
+    result.host.InternalIps = incoming.host.InternalIps;
+    result.host.ExternalIps = req.connection.remoteAddress;
+    result.host.ReportDate = new Date();
+  } else {
+    incoming.host.ExternalIps = req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress;
+    incoming.host.ReportDate = new Date();
+    ipReports.push(incoming);
+  }
+
   res.json(200);
 });
 

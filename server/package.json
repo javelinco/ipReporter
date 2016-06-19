@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/javelinco/ipReporter#readme",
   "dependencies": {
+    "body-parser": "^1.15.1",
     "express": "^4.14.0"
   }
 }
