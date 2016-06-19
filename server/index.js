@@ -12,6 +12,11 @@ app.get('/api/ipReports', function (req, res) {
   res.end(JSON.stringify(ipReports, null, 2));
 });
 
+function getIpAddress(req) {
+  return req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress;
+}
+
 app.post('/api/', function (req, res) {
   var incoming = req.body;
 
@@ -21,13 +26,10 @@ app.post('/api/', function (req, res) {
 
   if (result) {
     result.host.InternalIps = incoming.host.InternalIps;
-    result.host.ExternalIps = req.connection.remoteAddress;
+    result.host.ExternalIps = getIpAddress(req);
     result.host.ReportDate = new Date();
   } else {
-    incoming.host.ExternalIps = req.headers['x-forwarded-for'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      req.connection.socket.remoteAddress;
+    incoming.host.ExternalIps = getIpAddress(req);
     incoming.host.ReportDate = new Date();
     ipReports.push(incoming);
   }
